@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/models/categories_model.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../models/shop_home_data_model.dart';
 import '../../controller/shop_layout_cubit.dart';
@@ -10,7 +10,6 @@ import '../../controller/shop_layout_states.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return  Sizer(
@@ -18,8 +17,9 @@ class HomeScreen extends StatelessWidget {
         return BlocConsumer<ShopLayoutCubit,ShopLayoutStates>(
         listener: (BuildContext context,state){},
         builder: (BuildContext context,state){
-          return ConditionalBuilder(condition: ShopLayoutCubit.get(context).homeModel != null,
-            builder: (BuildContext context) {return productBuilder(ShopLayoutCubit.get(context).homeModel) ; },
+          return ConditionalBuilder(
+            condition: ShopLayoutCubit.get(context).homeModel != null,
+            builder: (BuildContext context) {return productBuilder(ShopLayoutCubit.get(context).homeModel,ShopLayoutCubit.get(context).categoryModel,context) ; },
             fallback: (BuildContext context) =>const Center(child:CircularProgressIndicator(color: Colors.blue,) ),
           );
         },
@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-Widget productBuilder(ShopHomeModel model){
+Widget productBuilder(ShopHomeModel model,CategoryModel categoryModel, BuildContext context){
   List<Widget> images= [
     customImage('https://img.freepik.com/free-vector/realistic-sale-background-with-balloons_23-2148857072.jpg?w=740&t=st=1686417016~exp=1686417616~hmac=a6cfe5760b264bc3ce2e394f3d43f655015ab83e161508902dbbea124ca86cb4'),
     customImage('https://img.freepik.com/premium-photo/3d-render-design-computer-online-technologic-store_274845-478.jpg?w=740'),
@@ -43,6 +43,7 @@ Widget productBuilder(ShopHomeModel model){
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 2.h,),
+          ///carousel images
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: ClipRRect(
@@ -58,14 +59,9 @@ Widget productBuilder(ShopHomeModel model){
           ),
           SizedBox(height: 1.h,),
           Text('Categories',style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold,color: Colors.blue),),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(3.w),
-            child: Image(image: NetworkImage('https://img.freepik.com/premium-photo/pink-accessories-blue-background_41926-904.jpg?w=826'),
-              height: 20.h,
-              width: 20.h,
-              fit: BoxFit.fill,
-            ),
-          ),
+          SizedBox(
+          height: 25.h,
+              child: categoryListView(categoryModel.data.data)),
           ///products
           Text('New products',style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold,color: Colors.blue),),
           GridView.count(crossAxisCount: 2,
@@ -76,14 +72,14 @@ Widget productBuilder(ShopHomeModel model){
             crossAxisSpacing: 2.w,
             mainAxisSpacing: 1.h,
             children: List.generate(model.data!.products.length, (index){
-              return productGridItem(model.data!.products[index]);
+              return productGridItem(model.data!.products[index],context);
             })),
         ],
       ),
     ),
   );
 }
-Widget productGridItem(ProductModel model){
+Widget productGridItem(ProductModel model,context){
   return Stack(
     alignment: Alignment.topRight,
     children: [
@@ -105,27 +101,50 @@ Widget productGridItem(ProductModel model){
               child: Column(
                 children: [
                   Expanded(
-                    flex: 1,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image(
-                        image: NetworkImage(
-                            '${model.image}'),fit: BoxFit.fill,
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding:EdgeInsets.symmetric(vertical: 1.h),
+                            child: Image(
+                              width: double.infinity,
+                              image: NetworkImage(
+                                  '${model.image}'),fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                          if(model.price != model.oldPrice)
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                height: 3.h,
+                                width: 6.h,
+                                decoration: BoxDecoration(
+                                    color: Colors.red.shade300,
+                                    borderRadius: BorderRadius.circular(1.w)
+                                ),
+                                child: Center(child: Text('${model.discount} % -',style: TextStyle(color: Colors.white,fontSize: 8.sp,fontWeight: FontWeight.bold),),),
+                              ))
+                        ],
                       ),
                     ),
                   ),
                   Text('${model.name}',maxLines: 1),
-                  ///bug!!
+                  ///prices
                   SizedBox(
                     height: 7.h,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 2.w),
                       child: Row(
                         children: [
-                          Text('${model.price.round()} EG',style: const TextStyle(color: Colors.blue),),
-                          const Spacer(),
+                          Text('${model.price.round()} EG',style: TextStyle(color: Colors.blue,fontSize: 12.sp),),
+                          SizedBox(width: 2.w,),
                           if(model.discount != 0)
-                            Text('${model.oldPrice.round()} EG',style: const TextStyle(color: Colors.grey, )),
+                            Text('${model.oldPrice.round()} EG',
+                                style:TextStyle(color: Colors.grey,
+                                  fontSize: 10.sp,
+                                  textBaseline: TextBaseline.alphabetic,
+                                )),
 
                         ],
                       ),
@@ -137,18 +156,66 @@ Widget productGridItem(ProductModel model){
           ),
         ],
       ),
-      ///favourites
+      ///favourites icon
       Padding(
         padding: EdgeInsets.all((1.5).w),
-        child: CircleAvatar(
-          radius: (4.5).w,
-          backgroundColor: Colors.blue,
-          child: const Icon(
-            Icons.favorite_border,color: Colors.white,),),
+        child: InkWell(
+          onTap: (){
+             ShopLayoutCubit.get(context).changeFavourites(model.id);
+             print(model.inFavorites);
+          },
+          child: CircleAvatar(
+            radius: (4.5).w,
+            backgroundColor: Colors.blue,
+            child: Icon(
+              ShopLayoutCubit.get(context).favourites[model.id]! ?Icons.favorite :Icons.favorite_border,color: Colors.white,),),
+        ),
       ),
     ],
   );
 }
 Widget customImage(String url){
   return Image(image: NetworkImage(url),fit: BoxFit.fill,);
+}
+Widget categoryListView(List<CategoryDataModel> listOfModel){
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 2.w),
+    child: SizedBox(
+      child: ListView.separated(
+        scrollDirection:Axis.horizontal ,
+        itemBuilder: (BuildContext context, int index){
+          if(index == 3){
+            ///see all box
+            return InkWell(
+              onTap: (){
+                ShopLayoutCubit.get(context).goToCategories();
+              },
+              child: Container(
+                height: 25.h,
+                width: 25.h,
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade400,
+                  borderRadius: BorderRadius.circular(2.h)
+                ),
+                child: Center(child: Text('See all',style: TextStyle(color: Colors.white,fontSize: 20.sp,fontWeight: FontWeight.bold,),)),
+              ),
+            );
+          }else{
+            ///category item
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(3.w),
+              child:  Image(
+                height: 25.h,
+                width: 25.h,
+                fit: BoxFit.fill,
+                image: NetworkImage(listOfModel[index].image),
+              ),
+            );
+          }
+        },
+        separatorBuilder: (BuildContext context, int index)=>SizedBox(width: 2.w,),
+        itemCount: 4,
+      ),
+    ),
+  );
 }

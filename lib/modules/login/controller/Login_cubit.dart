@@ -13,9 +13,18 @@ class ShopLoginCubit extends Cubit<ShopLoginStates>{
   bool visible = false;
   var formKey = GlobalKey<FormState>();
   bool isError = false;
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   LoginModel? loginModel;
+  void navigateTo(context, Widget widget) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget,
+        ));
+  }
+
   changeVisibility(){
     isPassword = !isPassword;
     print(isPassword);

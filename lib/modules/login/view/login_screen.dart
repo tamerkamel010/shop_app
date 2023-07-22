@@ -2,13 +2,15 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shop_app/Components_Consts/components.dart';
 import 'package:shop_app/Components_Consts/consts.dart';
 import 'package:shop_app/modules/login/controller/Login_cubit.dart';
 import 'package:shop_app/modules/login/controller/Login_cubit_states.dart';
 import 'package:shop_app/modules/shop_layout/shop_layout.dart';
 import 'package:shop_app/network/local/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+
+import '../../../Components_Consts/custom_button.dart';
+import '../../../Components_Consts/custom_text_form_field.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -22,7 +24,7 @@ class LoginScreen extends StatelessWidget {
           if(state is LoginSuccessState){
             if(state.loginModel.status == true){
               SharedPref.setData(key: 'token', value: state.loginModel.data!.token);
-              NavigateTo(context, const ShopLayout());
+              ShopLoginCubit.get(context).navigateTo(context, const ShopLayout());
               Fluttertoast.showToast(
                   msg: state.loginModel.message as String,
                   toastLength: Toast.LENGTH_SHORT,

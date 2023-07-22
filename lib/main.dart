@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shop_app/Components_Consts/consts.dart';
 import 'package:shop_app/Network/remote/dio.dart';
 import 'package:shop_app/modules/login/view/login_screen.dart';
 import 'package:shop_app/modules/shop_layout/controller/shop_layout_cubit.dart';
@@ -9,6 +8,7 @@ import 'Components_Consts/blocObserver.dart';
 import 'modules/onboard_screens/onboard_screen.dart';
 import 'modules/shop_layout/shop_layout.dart';
 import 'network/local/shared_preferences.dart';
+
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     bool? finishOnboard= SharedPref.get(key: 'finishOnboard')as bool? ?? false;
     String? token = SharedPref.get(key: 'token') as String?;
+    print(token);
     Widget? startWidget;
     if(finishOnboard == true){
       if(token != null){startWidget = const ShopLayout();}else{
@@ -34,7 +35,11 @@ class MyApp extends StatelessWidget {
     }
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (BuildContext context)=> ShopLayoutCubit()..getHomeData()..getCategoriesData()),
+        BlocProvider(create: (BuildContext context)=> ShopLayoutCubit()
+          ..getHomeData()
+          ..getCategoriesData()
+          ..getFavoritesData()
+          ..getProfile()),
       ],
       child: Sizer(
         builder: (BuildContext context, Orientation orientation, DeviceType deviceType) {
@@ -43,9 +48,10 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           home: startWidget,
           theme: ThemeData(
-              visualDensity: VisualDensity.adaptivePlatformDensity,
+              //visualDensity: VisualDensity.adaptivePlatformDensity,
               useMaterial3: true,
               primaryColor: Colors.white,
+              primarySwatch: Colors.blue,
               appBarTheme:  const AppBarTheme(
                 iconTheme:  IconThemeData(color: Colors.white),
                 titleTextStyle: TextStyle(
@@ -55,8 +61,8 @@ class MyApp extends StatelessWidget {
                 color: Colors.white,
                 elevation: 0.0,
               ),
-              iconTheme: IconThemeData(
-                  color: primaryColor
+              iconTheme: const IconThemeData(
+                  color: Colors.blue
               ),
               textTheme: const TextTheme(
                   bodyLarge: TextStyle(

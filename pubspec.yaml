@@ -24,6 +24,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   carousel_slider: ^4.2.1
   cached_network_image: ^3.2.3
+  flutter_cache_manager: ^3.3.0
 
 
 
