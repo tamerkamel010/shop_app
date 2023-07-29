@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shop_app/Components_Consts/components.dart';
 import 'package:shop_app/Components_Consts/custom_flutter_toast.dart';
 import 'package:shop_app/modules/shop_layout/controller/shop_layout_cubit.dart';
 import 'package:shop_app/modules/shop_layout/controller/shop_layout_states.dart';
@@ -30,7 +29,7 @@ class ShopLayout extends StatelessWidget {
             appBar: AppBar(
               centerTitle: true,
               title: Text(cubit.screensTitles[cubit.currentIndex],style: const TextStyle(color: Colors.blue),),
-              actions: [
+              actions: cubit.currentIndex != 4 ?[
                 Padding(
                   padding: EdgeInsets.only(right: (2).w),
                   child: CircleAvatar(
@@ -43,7 +42,7 @@ class ShopLayout extends StatelessWidget {
                         icon: Icon(Icons.search_outlined,color: Colors.white,size: 15.sp,)),
                   ),
                 )
-              ],
+              ]:null,
             ),
             body: cubit.screens[cubit.currentIndex],
             bottomNavigationBar: CurvedNavigationBar(

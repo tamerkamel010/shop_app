@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     bool? finishOnboard= SharedPref.get(key: 'finishOnboard')as bool? ?? false;
     String? token = SharedPref.get(key: 'token') as String?;
-    print(token);
+    debugPrint(token);
     Widget? startWidget;
     if(finishOnboard == true){
       if(token != null){startWidget = const ShopLayout();}else{

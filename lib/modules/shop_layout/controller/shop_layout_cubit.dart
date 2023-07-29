@@ -26,7 +26,12 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
   late CategoryModel categoryModel;
   FavouriteModel? favouriteModel;
   late GetFavourites getFavouritesModel;
-  late LoginModel profile;
+  late LoginModel profileModel;
+  ///profile controllers
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
 
   List<Widget> screens=const [
     HomeScreen(),
@@ -35,12 +40,12 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     FavouritesScreen(),
     ProfileScreen(),
   ];
-  List<String> screensTitles = const [
+  List<String> screensTitles = [
     'Home',
     'Categories',
     'Cart',
     'Favourites',
-    'Settings'
+    'Profile'
   ];
   Map<int?,bool?> favourites={};
   dynamic favKey = GlobalKey();
@@ -57,35 +62,35 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
   }
   getHomeData(){
     emit(ShopLayoutLoadState());
-    DioHelper.getData(url: Home,token: token,lang: 'en').then((value){
+    DioHelper.getData(url: home,token: token,lang: 'en').then((value){
       homeModel = ShopHomeModel.fromJson(value.data);
       homeModel.data!.products.forEach((element) {
         favourites.addAll({element.id:element.inFavorites});
       });
       emit(ShopLayoutSuccessState());
     }).catchError((error){
-      print(error);
+      debugPrint(error);
       emit(ShopLayoutErrorState());
     });
   }
   getCategoriesData(){
     emit(ShopGetCategoriesLoadingState());
-    DioHelper.getData(url: GetCategories,token: token,lang: 'en').then((value){
+    DioHelper.getData(url: getCategories,token: token,lang: 'en').then((value){
       categoryModel = CategoryModel.fromJson(value.data);
-      print(categoryModel.data.toString());
+      debugPrint(categoryModel.data.toString());
       emit(ShopGetCategoriesSuccessState());
     }).catchError((error){
-      print(error);
+      debugPrint(error);
       emit(ShopGetCategoriesErrorState());
     });
   }
   getFavoritesData(){
     emit(ShopGetFavoritesLoadingState());
-    DioHelper.getData(url: Favorites,token: token,lang: 'en').then((value){
+    DioHelper.getData(url: favorites,token: token,lang: 'en').then((value){
       getFavouritesModel = GetFavourites.fromJson(value.data);
       emit(ShopGetFavoritesSuccessState());
     }).catchError((error){
-      print(error);
+      debugPrint(error);
       emit(ShopGetFavoritesErrorState());
     });
   }
@@ -97,12 +102,12 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     favourites[productId]=!favourites[productId]!;
     emit(ShopChangeSuccess());
     DioHelper.postData(
-      url: Favorites,
+      url: favorites,
       data: {'product_id':productId},token: token,lang: 'en'
     ).then((value){
       favouriteModel = FavouriteModel.fromJson(value.data);
-      print(favouriteModel!.message);
-      print(favouriteModel!.status);
+      debugPrint(favouriteModel!.message);
+      debugPrint(favouriteModel!.status.toString());
       if(!favouriteModel!.status){
         favourites[productId]=!favourites[productId]!;
       }else{
@@ -110,7 +115,7 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
       }
       emit(ShopChangeFavouritesSuccess(favouriteModel!));
     }).catchError((error){
-      print(error.toString());
+      debugPrint(error.toString());
       favourites[productId]=!favourites[productId]!;
       emit(ShopChangeFavouritesError());
   }
@@ -118,12 +123,13 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
   }
   getProfile(){
     emit(ShopGetProfileLoadingState());
-    DioHelper.getData(url: Profile,token: token,lang: 'en').then((value){
-      profile= LoginModel.fromJson(value.data);
-      print(profile.data!.phone);
+    DioHelper.getData(url: profile,token: token,lang: 'en').then((value){
+      profileModel= LoginModel.fromJson(value.data);
+      debugPrint("getting profile successfully");
+      debugPrint(profileModel.data!.phone);
       emit(ShopGetProfileSuccessState());
     }).catchError((error){
-      print(error);
+      debugPrint(error);
       emit(ShopGetProfileErrorState());
     });
   }

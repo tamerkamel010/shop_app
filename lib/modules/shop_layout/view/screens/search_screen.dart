@@ -24,7 +24,7 @@ class SearchScreen extends StatelessWidget {
                 elevation: 3,
                 child: CustomTextFormField(
                     controller: ShopLayoutCubit.get(context).searchController,
-                   hintText: 'Search about anything ...',
+                    hintText: 'Search about anything ...',
 
                 )),
           ),),

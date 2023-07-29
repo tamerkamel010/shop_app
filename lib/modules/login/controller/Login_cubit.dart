@@ -32,7 +32,7 @@ class ShopLoginCubit extends Cubit<ShopLoginStates>{
 }
    userLogin({required String email,required String password,String? lang = 'ar'}){
     emit(LoginLoadingState());
-    DioHelper.postData(url: LOGIN, data: {"email":email,
+    DioHelper.postData(url: login, data: {"email":email,
       "password":password,
     },lang: lang).then((v){
       loginModel = LoginModel.fromJson(v.data);
