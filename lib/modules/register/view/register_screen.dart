@@ -3,30 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shop_app/Components_Consts/consts.dart';
-import 'package:shop_app/Components_Consts/navigate_and_finish.dart';
-import 'package:shop_app/modules/login/controller/Login_cubit.dart';
-import 'package:shop_app/modules/login/controller/Login_cubit_states.dart';
-import 'package:shop_app/modules/register/view/register_screen.dart';
 import 'package:shop_app/modules/shop_layout/shop_layout.dart';
 import 'package:shop_app/network/local/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../../Components_Consts/custom_button.dart';
 import '../../../Components_Consts/custom_text_form_field.dart';
+import '../../../Components_Consts/navigate_and_finish.dart';
+import '../controller/register_cubit.dart';
+import '../controller/Register_cubit_states.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => ShopLoginCubit(),
-      child: BlocConsumer<ShopLoginCubit, ShopLoginStates>(
+      create: (BuildContext context) => ShopRegisterCubit(),
+      child: BlocConsumer<ShopRegisterCubit, ShopRegisterStates>(
         listener: (BuildContext context, state) {
-          if(state is LoginSuccessState){
+          if(state is RegisterSuccessState){
             if(state.loginModel.status == true){
               SharedPref.setData(key: 'token', value: state.loginModel.data!.token);
-              ShopLoginCubit.get(context).navigateTo(context, const ShopLayout());
+              navigateTo(context, const ShopLayout());
               Fluttertoast.showToast(
                   msg: state.loginModel.message as String,
                   toastLength: Toast.LENGTH_SHORT,
@@ -50,7 +48,7 @@ class LoginScreen extends StatelessWidget {
           }
         },
         builder: (BuildContext context, state) {
-          var shopCubit = ShopLoginCubit.get(context);
+          var shopCubit = ShopRegisterCubit.get(context);
           return Scaffold(
             backgroundColor: Colors.blue,
             appBar: AppBar(
@@ -61,13 +59,13 @@ class LoginScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(25.0),
                 child: Form(
-                    key: ShopLoginCubit.get(context).formKey,
+                    key: ShopRegisterCubit.get(context).formKey,
                     child: Column(
                       children: [
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Login Account',
+                            'Register Account',
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium
@@ -85,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                                 height: height(context) * 0.01,
                               ),
                               Text(
-                                'Hello,Welcome Back',
+                                'Welcome to Our Online Shop',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge
@@ -96,9 +94,26 @@ class LoginScreen extends StatelessWidget {
                               SizedBox(
                                 height: height(context) * 0.08,
                               ),
+                              ///userName
+                              CustomTextFormField(
+                                labelText: 'User name',
+                                prefixIcon: Icons.person_2_outlined,
+                                validate: (v) {
+                                  if (v.isEmpty) {
+                                    return 'Enter valid user name';
+                                  }
+                                  return null;
+                                },
+                                controller: shopCubit.userNameController,
+                                hintText: 'Enter your name',
+                              ),
+                              SizedBox(
+                                height: height(context) * 0.03,
+                              ),
                               ///email
                               CustomTextFormField(
-                                labelText: 'Password',
+                                labelText: 'Email',
+                                prefixIcon: Icons.alternate_email_outlined,
                                 validate: (v) {
                                   if (v.isEmpty) {
                                     return 'Enter valid email';
@@ -106,7 +121,24 @@ class LoginScreen extends StatelessWidget {
                                   return null;
                                 },
                                 controller: shopCubit.emailController,
-                                hintText: 'Enter Username',
+                                hintText: 'Enter your email',
+                              ),
+                              SizedBox(
+                                height: height(context) * 0.03,
+                              ),
+                              ///phone
+                              CustomTextFormField(
+                                labelText: 'Phone',
+                                controller: shopCubit.phoneController,
+                                prefixIcon: Icons.phone_android,
+                                hintText: 'Phone',
+                                validate: (v) {
+                                  if (v.isEmpty) {
+                                    return 'Enter valid password';
+                                  }
+                                  return null;
+                                },
+
                               ),
                               SizedBox(
                                 height: height(context) * 0.03,
@@ -115,15 +147,18 @@ class LoginScreen extends StatelessWidget {
                               CustomTextFormField(
                                 labelText: 'Password',
                                 controller: shopCubit.passwordController,
+                                prefixIcon: Icons.lock_outline_sharp,
                                 hintText: 'Password',
                                 onSubmit: (value){
                                   if((shopCubit.formKey.currentState!.validate())){
-                                    shopCubit.userLogin(
+                                    shopCubit.userRegister(
                                         email: shopCubit.emailController.text,
                                         password: shopCubit.passwordController.text,
-                                        lang: 'en'
+                                        lang: 'en',
+                                        userName: shopCubit.userNameController.text,
+                                        phoneNumber: shopCubit.phoneController.text
                                     );}else{
-                                    print('false');
+                                    debugPrint('false');
                                   }
                                 },
                                 validate: (v) {
@@ -135,45 +170,31 @@ class LoginScreen extends StatelessWidget {
                                 isPasswordField: true,
                                 isPasswordShown: shopCubit.isPassword,
                                 passwordFun: () {
-                                  ShopLoginCubit.get(context)
+                                  ShopRegisterCubit.get(context)
                                       .changeVisibility();
                                 },
-                              ),
-                              SizedBox(
-                                height: height(context) * 0.015,
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Text(
-                                  'Reset Password',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
-                                ),
                               ),
                               SizedBox(
                                 height: height(context) * 0.07,
                               ),
                               Center(
                                 child: ConditionalBuilder(
-                                  condition: state is! LoginLoadingState,
+                                  condition: state is! RegisterLoadingState,
                                   builder: (context) => CustomButton(
                                     onTap: (){
                                       if((shopCubit.formKey.currentState!.validate())){
-                                        shopCubit.userLogin(
+                                        shopCubit.userRegister(
+                                            userName: shopCubit.userNameController.text,
                                             email: shopCubit.emailController.text,
+                                            phoneNumber: shopCubit.phoneController.text,
                                             password: shopCubit.passwordController.text,
                                         lang: 'en'
                                         );}else{
-                                        print('false');
+                                        debugPrint('false');
                                       }
                                     },
                                     borderRadius: 10,
-                                    buttonText: 'Sign In',
+                                    buttonText: 'Register',
                                     buttonColor: Colors.white,
                                     buttonTextColor: Colors.blue,
                                   ),
@@ -187,20 +208,18 @@ class LoginScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Not a member?',
+                                    'a member?',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
                                         ?.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                        color: Colors.black87),
                                   ),
                                   TextButton(
-                                      onPressed: () {
-                                        navigateTo(context, const RegisterScreen());
-                                      },
+                                      onPressed: () {},
                                       child: Text(
-                                        'Register now',
+                                        'Sign In now',
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium

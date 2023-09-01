@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class CustomButton extends StatelessWidget {
   final Function()? onTap;
   final double borderRadius, buttonTextSize;
@@ -9,9 +10,8 @@ class CustomButton extends StatelessWidget {
   final double buttonWidth;
   final double buttonHeight;
   final double elevation;
-
-
-
+ final Color borderColor;
+ final double borderWidth;
   const CustomButton({
     super.key,
     this.onTap,
@@ -23,18 +23,20 @@ class CustomButton extends StatelessWidget {
     this.buttonTextWeight = FontWeight.bold,
     this.buttonHeight = 20,
     this.buttonWidth = 130,
-    this.elevation = 0,
+    this.elevation = 0,this.borderColor= Colors.blue,this.borderWidth=2,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return OutlinedButton(
       onPressed: onTap,
-      style: ElevatedButton.styleFrom(
+      style: OutlinedButton.styleFrom(
           elevation: elevation,
           backgroundColor: buttonColor,
+          side: BorderSide(color: borderColor,width: borderWidth),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
+
           ),
           padding: EdgeInsets.symmetric(
               vertical: (buttonHeight),

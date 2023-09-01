@@ -16,6 +16,8 @@ class SharedPref{
   static Object? get({required String key}){
     return shared!.get(key);
   }
-
+   static signOut(String token){
+    shared!.remove(token);
+  }
 }
 

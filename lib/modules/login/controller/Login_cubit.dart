@@ -27,7 +27,7 @@ class ShopLoginCubit extends Cubit<ShopLoginStates>{
 
   changeVisibility(){
     isPassword = !isPassword;
-    print(isPassword);
+    debugPrint(isPassword.toString());
     emit(ChangeVisibilityState());
 }
    userLogin({required String email,required String password,String? lang = 'ar'}){
@@ -36,10 +36,10 @@ class ShopLoginCubit extends Cubit<ShopLoginStates>{
       "password":password,
     },lang: lang).then((v){
       loginModel = LoginModel.fromJson(v.data);
-      print(loginModel!.message);
+      debugPrint(loginModel!.message);
       emit(LoginSuccessState(loginModel: loginModel!));
     }).catchError((error){
-      print(error);
+      debugPrint(error);
       emit(LoginErrorState(error: error.toString()));
     });
   }

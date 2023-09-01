@@ -42,7 +42,11 @@ class ProfileItem extends StatelessWidget {
 }
 Widget profileItem(
     TextEditingController controller,
-    IconData prefixIcon
+    IconData prefixIcon,
+    {
+      bool readOnly = true,
+      dynamic Function()? onTap,
+    }
     )=>Row(
   children: [
     Expanded(
@@ -51,17 +55,20 @@ Widget profileItem(
           elevation: 3,
           child: CustomTextFormField(
             controller: controller,
-            readOnly: true,
+            readOnly: readOnly,
             prefixIcon: prefixIcon,
+
           )),
     ),
-    CircleAvatar(
-      radius: 6.w,
-      backgroundColor: Colors.blue,
-      child: const Icon(
-        Icons.edit_outlined,
-        color: Colors.white,
+      InkWell(
+        onTap: onTap,
+        child: readOnly == true? CircleAvatar(
+        radius: 6.w,
+        backgroundColor: Colors.blue,
+        child: const Icon(
+          Icons.edit_outlined,
+          color: Colors.white,
+        ),) : const SizedBox(width: 0.000001,),
       ),
-    ),
   ],
 );

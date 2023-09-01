@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/models/categories_model.dart';
@@ -34,20 +35,12 @@ Widget categoryItem(CategoryDataModel model){
         width: 38.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1.h),
-          image: DecorationImage(image: NetworkImage(model.image),fit: BoxFit.fill)
         ),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2.h),
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.center,
-              colors: [
-                Colors.blue.withOpacity(0.7),
-                Colors.white.withOpacity(0),
-              ]
-            )
           ),
+          child: CachedNetworkImage(imageUrl:model.image,fit: BoxFit.fill,),
         ),
 
       ),

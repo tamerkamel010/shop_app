@@ -38,3 +38,10 @@ class ShopGetProfileLoadingState extends ShopLayoutStates{}
 class ShopGetProfileSuccessState extends ShopLayoutStates{}
 
 class ShopGetProfileErrorState extends ShopLayoutStates{}
+
+class ShopProfileItemChangeState extends ShopLayoutStates{}
+
+class ShopAddState extends ShopLayoutStates{}
+
+
+

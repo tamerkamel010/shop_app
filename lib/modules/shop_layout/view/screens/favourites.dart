@@ -1,8 +1,6 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shop_app/models/get_favorites_model.dart';
-import 'package:shop_app/models/shop_home_data_model.dart';
 import 'package:shop_app/modules/shop_layout/controller/shop_layout_cubit.dart';
 import 'package:shop_app/modules/shop_layout/controller/shop_layout_states.dart';
 import 'package:sizer/sizer.dart';
@@ -24,7 +22,7 @@ class FavouritesScreen extends StatelessWidget {
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (BuildContext context, int index)=>SizedBox(
-              height: 30.h,
+              height: 70.w,
               child: productGridItem(
                   ShopLayoutCubit.get(context).getFavouritesModel.dataOut.dataIn[index].product,context
               ),

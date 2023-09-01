@@ -24,20 +24,3 @@ class FavProduct{
     product = ProductModel.fromJson(json['product']);
   }
 }
-/*
-class ProductModel{
-  late int id;
-  late double price;
-  late double oldPrice;
-  late double discount;
-  late String image;
-  late String name;
-  ProductModel.fromJson(Map<String,dynamic> json){
-    id=json['id'];
-    price=json['price'];
-    oldPrice=json['old_price'];
-    discount=json['discount'];
-    image=json['image'];
-    name=json['name'];
-  }
-}*/

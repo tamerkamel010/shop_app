@@ -1,3 +1,4 @@
+import 'dart:core';
 class ShopHomeModel{
    bool? status;
    ShopDataModel? data;
@@ -33,9 +34,11 @@ class ProductModel {
  dynamic discount;
  String? image;
  String? name;
+ String? description;
  bool? inFavorites;
  bool? inCart;
- ProductModel({this.id,this.image,this.discount,this.inCart,this.inFavorites,this.name,this.oldPrice,this.price});
+ ProductModel({
+   this.id,this.image,this.discount,this.inCart,this.inFavorites,this.name,this.oldPrice,this.price,this.description});
  ProductModel.fromJson(Map<String,dynamic> json){
    id = json['id'];
    price = json['price'];
@@ -45,5 +48,6 @@ class ProductModel {
    image = json['image'];
    inFavorites = json['in_favorites'];
    inCart = json['in_cart'];
+   description = json['description'];
  }
 }

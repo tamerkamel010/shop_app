@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/Components_Consts/navigate_and_finish.dart';
 import 'package:shop_app/models/categories_model.dart';
+import 'package:shop_app/modules/shop_layout/view/screens/product_screen.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../models/shop_home_data_model.dart';
 import '../../controller/shop_layout_cubit.dart';
@@ -19,7 +22,8 @@ class HomeScreen extends StatelessWidget {
         builder: (BuildContext context,state){
           return ConditionalBuilder(
             condition: ShopLayoutCubit.get(context).homeModel != null,
-            builder: (BuildContext context) {return productBuilder(ShopLayoutCubit.get(context).homeModel,ShopLayoutCubit.get(context).categoryModel,context) ; },
+            builder: (BuildContext context) {
+              return productBuilder(ShopLayoutCubit.get(context).homeModel,ShopLayoutCubit.get(context).categoryModel,context) ; },
             fallback: (BuildContext context) =>const Center(child:CircularProgressIndicator(color: Colors.blue,) ),
           );
         },
@@ -48,7 +52,8 @@ Widget productBuilder(ShopHomeModel model,CategoryModel categoryModel, BuildCont
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: CarouselSlider(items: images,
+              child: CarouselSlider(
+                  items: images,
                   options:CarouselOptions(
                     height: 40.h,
                     initialPage: 0,
@@ -80,102 +85,103 @@ Widget productBuilder(ShopHomeModel model,CategoryModel categoryModel, BuildCont
   );
 }
 Widget productGridItem(ProductModel model,context){
-  return Stack(
-    alignment: Alignment.topRight,
-    children: [
-      Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: EdgeInsets.only(top: 1.h,right: 1.w,left: 1.w),
-              decoration: BoxDecoration(
-                boxShadow: [BoxShadow(
-                    color: Colors.blue.shade100, //New
-                    blurRadius: 25.0,
-                    offset: const Offset(0, 10))
-                  ],
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding:EdgeInsets.symmetric(vertical: 1.h),
-                            child: Image(
-                              width: double.infinity,
-                              image: NetworkImage(
-                                  '${model.image}'),fit: BoxFit.fitHeight,
+  return InkWell(
+    onTap: (){
+      navigateTo(context, ProductScreen(model: model));
+    },
+    child: Stack(
+      alignment: Alignment.topRight,
+      children: [
+        Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                padding: EdgeInsets.only(top: 1.h,right: 1.w,left: 1.w),
+                decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(
+                      color: Colors.blue.shade100, //New
+                      blurRadius: 25.0,
+                      offset: const Offset(0, 10))
+                    ],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding:EdgeInsets.symmetric(vertical: 1.h),
+                              child: Center(child: CachedNetworkImage(imageUrl: '${model.image}',fit: BoxFit.fill,))
                             ),
-                          ),
-                          if(model.price != model.oldPrice)
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Container(
-                                height: 3.h,
-                                width: 6.h,
-                                decoration: BoxDecoration(
-                                    color: Colors.red.shade300,
-                                    borderRadius: BorderRadius.circular(1.w)
-                                ),
-                                child: Center(child: Text('${model.discount} % -',style: TextStyle(color: Colors.white,fontSize: 8.sp,fontWeight: FontWeight.bold),),),
-                              ))
-                        ],
+                            if(model.price != model.oldPrice)
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Container(
+                                  height: 3.h,
+                                  width: 6.h,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red.shade300,
+                                      borderRadius: BorderRadius.circular(1.w)
+                                  ),
+                                  child: Center(child: Text('${model.discount} % -',style: TextStyle(color: Colors.white,fontSize: 8.sp,fontWeight: FontWeight.bold),),),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Text('${model.name}',maxLines: 1),
-                  ///prices
-                  SizedBox(
-                    height: 7.h,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: Row(
-                        children: [
-                          Text('${model.price.round()} EG',style: TextStyle(color: Colors.blue,fontSize: 12.sp),),
-                          SizedBox(width: 2.w,),
-                          if(model.discount != 0)
-                            Text('${model.oldPrice.round()} EG',
-                                style:TextStyle(color: Colors.grey,
-                                  fontSize: 10.sp,
-                                  textBaseline: TextBaseline.alphabetic,
-                                )),
+                    Text('${model.name}',maxLines: 1),
+                    ///prices
+                    SizedBox(
+                      height: 7.h,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.w),
+                        child: Row(
+                          children: [
+                            Text('${model.price.round()} EG',style: TextStyle(color: Colors.blue,fontSize: 12.sp),),
+                            SizedBox(width: 2.w,),
+                            if(model.discount != 0)
+                              Text('${model.oldPrice.round()} EG',
+                                  style:TextStyle(color: Colors.grey,
+                                    fontSize: 10.sp,
+                                    textBaseline: TextBaseline.alphabetic,
+                                  )),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      ///favourites icon
-      Padding(
-        padding: EdgeInsets.all((1.5).w),
-        child: InkWell(
-          onTap: (){
-             ShopLayoutCubit.get(context).changeFavourites(model.id);
-             print(model.inFavorites);
-          },
-          child: CircleAvatar(
-            radius: (4.5).w,
-            backgroundColor: Colors.blue,
-            child: Icon(
-              ShopLayoutCubit.get(context).favourites[model.id]! ?Icons.favorite :Icons.favorite_border,color: Colors.white,),),
+          ],
         ),
-      ),
-    ],
+        ///favourites icon
+        Padding(
+          padding: EdgeInsets.all((1.5).w),
+          child: InkWell(
+            onTap: (){
+               ShopLayoutCubit.get(context).changeFavourites(model.id);
+               print(model.inFavorites);
+            },
+            child: CircleAvatar(
+              radius: (4.5).w,
+              backgroundColor: Colors.blue,
+              child: Icon(
+                (ShopLayoutCubit.get(context).favourites[model.id]!??false) ?Icons.favorite :Icons.favorite_border,color: Colors.white,),),
+          ),
+        ),
+      ],
+    ),
   );
 }
 Widget customImage(String url){
-  return Image(image: NetworkImage(url),fit: BoxFit.fill,);
+  return CachedNetworkImage(imageUrl: url,fit: BoxFit.fill,);
 }
 Widget categoryListView(List<CategoryDataModel> listOfModel){
   return Padding(
@@ -204,11 +210,13 @@ Widget categoryListView(List<CategoryDataModel> listOfModel){
             ///category item
             return ClipRRect(
               borderRadius: BorderRadius.circular(3.w),
-              child:  Image(
+              child: SizedBox(
                 height: 25.h,
                 width: 25.h,
-                fit: BoxFit.fill,
-                image: NetworkImage(listOfModel[index].image),
+                child: CachedNetworkImage(
+                  imageUrl: listOfModel[index].image,
+                  fit: BoxFit.fill,
+                ),
               ),
             );
           }

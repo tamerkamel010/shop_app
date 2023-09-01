@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/Network/remote/dio.dart';
@@ -31,8 +32,7 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-
-
+  ///
   List<Widget> screens=const [
     HomeScreen(),
     CategoriesScreen(),
@@ -47,8 +47,33 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     'Favourites',
     'Profile'
   ];
+  bool profileItem1 = true;
+  bool profileItem2 = true;
+  bool profileItem3 = true;
+
   Map<int?,bool?> favourites={};
   dynamic favKey = GlobalKey();
+
+  void changeProfileItem1(){
+    profileItem1= false;
+    emit(ShopProfileItemChangeState());
+  }
+  void changeProfileItem2(){
+    profileItem2= false;
+    emit(ShopProfileItemChangeState());
+  }
+  void changeProfileItem3(){
+    profileItem3= false;
+    emit(ShopProfileItemChangeState());
+  }
+  List<Widget>? carouselSliderImages(List<String>? images){
+    List<Widget>? carouselImages;
+    for(int i=0;i<images!.length;i++){
+      carouselImages!.add(CachedNetworkImage(imageUrl: images[i],));
+    }
+    return carouselImages;
+  }
+
   void navigateTo(context, Widget widget) {
     Navigator.push(
         context,
@@ -69,7 +94,7 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
       });
       emit(ShopLayoutSuccessState());
     }).catchError((error){
-      debugPrint(error);
+      debugPrint(error.toString());
       emit(ShopLayoutErrorState());
     });
   }
@@ -133,4 +158,6 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
       emit(ShopGetProfileErrorState());
     });
   }
+  updateProfile(){}
+
 }
