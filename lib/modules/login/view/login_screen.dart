@@ -122,7 +122,8 @@ class LoginScreen extends StatelessWidget {
                                         email: shopCubit.emailController.text,
                                         password: shopCubit.passwordController.text,
                                         lang: 'en'
-                                    );}else{
+                                    );
+                                  }else{
                                     print('false');
                                   }
                                 },
@@ -168,7 +169,9 @@ class LoginScreen extends StatelessWidget {
                                             email: shopCubit.emailController.text,
                                             password: shopCubit.passwordController.text,
                                         lang: 'en'
-                                        );}else{
+                                        );
+
+                                      }else{
                                         print('false');
                                       }
                                     },

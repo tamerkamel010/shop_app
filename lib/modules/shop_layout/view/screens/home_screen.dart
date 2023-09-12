@@ -173,7 +173,7 @@ Widget productGridItem(ProductModel model,context){
               radius: (4.5).w,
               backgroundColor: Colors.blue,
               child: Icon(
-                (ShopLayoutCubit.get(context).favourites[model.id]!??false) ?Icons.favorite :Icons.favorite_border,color: Colors.white,),),
+                (ShopLayoutCubit.get(context).favourites[model.id]??false) ?Icons.favorite :Icons.favorite_border,color: Colors.white,),),
           ),
         ),
       ],

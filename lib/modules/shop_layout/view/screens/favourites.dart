@@ -23,9 +23,12 @@ class FavouritesScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (BuildContext context, int index)=>SizedBox(
               height: 70.w,
-              child: productGridItem(
+              child:
+              state is ShopChangeFavLoad ?
+              const Center(child: CircularProgressIndicator(color: Colors.blue,),)
+              :productGridItem(
                   ShopLayoutCubit.get(context).getFavouritesModel.dataOut.dataIn[index].product,context
-              ),
+              ) ,
             ),
             separatorBuilder: (BuildContext context, int index)=>SizedBox(height: 10.w,),
             itemCount: ShopLayoutCubit.get(context).getFavouritesModel.dataOut.dataIn.length,

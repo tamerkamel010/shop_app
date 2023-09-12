@@ -25,7 +25,9 @@ class ShopChangeFavouritesSuccess extends ShopLayoutStates{
 
 class ShopChangeFavouritesError extends ShopLayoutStates{
 }
-class ShopChangeSuccess extends ShopLayoutStates{}
+class ShopChangeFavSuccess extends ShopLayoutStates{}
+
+class ShopChangeFavLoad extends ShopLayoutStates{}
 
 class ShopGetFavoritesLoadingState extends ShopLayoutStates{}
 
@@ -43,5 +45,10 @@ class ShopProfileItemChangeState extends ShopLayoutStates{}
 
 class ShopAddState extends ShopLayoutStates{}
 
+class ShopCategoryProductsLoadState extends ShopLayoutStates{}
+
+class ShopCategoryProductsSuccessState extends ShopLayoutStates{}
+
+class ShopCategoryProductsErrorState extends ShopLayoutStates{}
 
 

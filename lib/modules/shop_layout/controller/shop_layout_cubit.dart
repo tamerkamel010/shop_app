@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/Network/remote/dio.dart';
+import 'package:shop_app/models/category_products_model.dart';
 import 'package:shop_app/models/favourites_model.dart';
 import 'package:shop_app/models/shop_home_data_model.dart';
 import 'package:shop_app/models/shop_login_model.dart';
@@ -22,8 +23,11 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
   static ShopLayoutCubit get(context)=> BlocProvider.of(context);
   int currentIndex = 0;
   dynamic token = SharedPref.get(key: 'token');
-  dynamic homeModel;
+
   late TextEditingController searchController = TextEditingController();
+  ///models
+  dynamic homeModel;
+  CategoryProductsModel? categoryProductsModel;
   late CategoryModel categoryModel;
   FavouriteModel? favouriteModel;
   late GetFavourites getFavouritesModel;
@@ -124,8 +128,9 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     emit(ShopLayoutChangeNavBarState());
   }
   changeFavourites(int? productId){
+    emit(ShopChangeFavLoad());
     favourites[productId]=!favourites[productId]!;
-    emit(ShopChangeSuccess());
+    emit(ShopChangeFavSuccess());
     DioHelper.postData(
       url: favorites,
       data: {'product_id':productId},token: token,lang: 'en'
@@ -151,7 +156,6 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     DioHelper.getData(url: profile,token: token,lang: 'en').then((value){
       profileModel= LoginModel.fromJson(value.data);
       debugPrint("getting profile successfully");
-      debugPrint(profileModel.data!.phone);
       emit(ShopGetProfileSuccessState());
     }).catchError((error){
       debugPrint(error);
@@ -159,5 +163,15 @@ class ShopLayoutCubit extends Cubit<ShopLayoutStates>{
     });
   }
   updateProfile(){}
+  getCategoryProducts(int id){
+    emit(ShopCategoryProductsLoadState());
+    DioHelper.getData(url: '$categoryProducts$id',token: token,lang: 'en').then((value){
+      categoryProductsModel = CategoryProductsModel.fromJson(value.data);
+      emit(ShopCategoryProductsSuccessState());
+    }).catchError((error){
+      debugPrint(error.toString());
+      emit(ShopCategoryProductsErrorState());
+    });
+  }
 
 }

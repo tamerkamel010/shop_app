@@ -15,15 +15,13 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = ShopLayoutCubit.get(context);
-    cubit.userNameController.text = cubit.profileModel.data!.name?.toUpperCase() as String;
-    cubit.emailController.text = cubit.profileModel.data!.email as String;
-    cubit.phoneController.text = cubit.profileModel.data!.phone as String;
-
-
     return BlocConsumer<ShopLayoutCubit, ShopLayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var cubit = ShopLayoutCubit.get(context);
+        cubit.userNameController.text = cubit.profileModel.data!.name?.toUpperCase() as String;
+        cubit.emailController.text = cubit.profileModel.data!.email as String;
+        cubit.phoneController.text = cubit.profileModel.data!.phone as String;
         return Sizer(
           builder: (BuildContext context, Orientation orientation,
                   DeviceType deviceType) =>
@@ -40,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
                           border: Border.all(color: Colors.blue, width: 1.w),
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                              image: NetworkImage(
+                              image: CachedNetworkImageProvider(
                                   '${ShopLayoutCubit.get(context).profileModel.data!.image}'))),
                     ),///camera icon
                     Positioned(
