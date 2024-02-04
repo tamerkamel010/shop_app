@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:sizer/sizer.dart';
-import 'consts.dart';
-Widget OnBoardItem({required IconData iconData, required String text}) =>
-    Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          iconData,
-          size: 100,
-        ),
-        Text(
-          text,
-          style: GoogleFonts.aleo(
-              textStyle:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-        )
-      ],
+Widget onBoardItem({required String image, required String text}) =>
+    Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(image: AssetImage(image),fit: BoxFit.cover)
+      ),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          Text(
+            text,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20,fontFamily: "janna")
+          )
+        ],
+      ),
     );
 
-void NavigateAndDelete(context, Widget) {
+void navigateAndDelete(context, Widget widget) {
   Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => Widget,
+        builder: (context) => widget,
       ),
       (route) => false);
 }
 
 
-///return type in onpressed and Method must be identicals.
+///return type in on pressed and Method must be identical.

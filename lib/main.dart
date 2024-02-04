@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
               //visualDensity: VisualDensity.adaptivePlatformDensity,
               useMaterial3: true,
+              fontFamily: "janna",
               primaryColor: Colors.white,
               primarySwatch: Colors.blue,
               indicatorColor: Colors.blue,

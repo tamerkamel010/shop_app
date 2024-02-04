@@ -118,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
                                 buttonColor: Colors.white,
                                 onTap: (){
                                   SharedPref.signOut(cubit.profileModel.data!.token as String);
-                                  NavigateAndDelete(context, const LoginScreen());
+                                  navigateAndDelete(context, const LoginScreen());
                                 },
                                 borderRadius: 3.w,
                                 buttonText: 'Log out',
