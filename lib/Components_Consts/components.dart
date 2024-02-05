@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-Widget onBoardItem({required String image, required String text}) =>
-    Container(
+
+Widget onBoardItem({required String image, required String text}) => Container(
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(image),fit: BoxFit.cover)
-      ),
+          image:
+              DecorationImage(image: AssetImage(image), fit: BoxFit.contain)),
       child: Stack(
-        alignment: Alignment.bottomRight,
+        alignment: Alignment.bottomCenter,
         children: [
-          Text(
-            text,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20,fontFamily: "janna")
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 20),
+            child: Text(text,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.blue,
+                    fontFamily: "janna")),
           )
         ],
       ),
@@ -23,6 +28,5 @@ void navigateAndDelete(context, Widget widget) {
       ),
       (route) => false);
 }
-
 
 ///return type in on pressed and Method must be identical.

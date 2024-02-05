@@ -7,9 +7,9 @@ import '../login/view/login_screen.dart';
 
 class OnBoardScreen extends StatelessWidget {
   List<Widget> onBoardList =[
-    onBoardItem(image: "lib/assets/images/save_money.png",text: 'Add item'),
-    onBoardItem(image: "lib/assets/images/delivery.png",text: 'Delivery anywhere'),
-    onBoardItem(image: "lib/assets/images/order_now.png",text: 'Shop Now'),
+    onBoardItem(image: "lib/assets/images/save_money.png",text: 'Hurry to use offers'),
+    onBoardItem(image: "lib/assets/images/delivery.png",text: 'Delivery to anywhere'),
+    onBoardItem(image: "lib/assets/images/order_now.png",text: 'Order Now'),
   ];
   PageController pageVCont = PageController();
   bool isLast = false;
